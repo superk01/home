@@ -104,9 +104,9 @@
          values(#{fullName}, #{bno})
    </insert>
    
-  <!--  <select id="maxNum" resultType="int">
+   <select id="maxNum" resultType="int">
       select MAX(bno) from tbl_board
-   </select> -->
+   </select>
    
    <select id="getAttach" resultType="string">
       select fullname from tbl_attach where bno = #{bno} order by regdate

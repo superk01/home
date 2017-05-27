@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.FileVO;
 import org.zerock.domain.SearchCriteria;
 
 public interface BoardDAO {
@@ -30,7 +31,9 @@ public interface BoardDAO {
 	
 	public void updateViewCnt(Integer bno)throws Exception;
 	
-	public void addAttach(String fullName)throws Exception;
+	public void addAttach(FileVO fileVO)throws Exception;
 	
 	public List<String> getAttach(Integer bno)throws Exception;
+	
+	public int maxNum()throws Exception;
 }

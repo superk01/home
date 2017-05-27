@@ -11,6 +11,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.FileVO;
 import org.zerock.domain.SearchCriteria;
 
 @Repository
@@ -103,8 +104,9 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 
 	@Override
-	public void addAttach(String fullName) throws Exception {
-		session.insert(namespace+".addAttach", fullName);
+	public void addAttach(FileVO fileVO) throws Exception {
+		System.out.println("BoardDAO-addAttach"+fileVO);
+		session.insert(namespace+".addAttach", fileVO);
 		
 	}
 
@@ -112,6 +114,13 @@ public class BoardDAOImpl implements BoardDAO {
 	public List<String> getAttach(Integer bno) throws Exception {
 		return session.selectList(namespace+".getAttach", bno);
 	}
+
+	@Override
+	public int maxNum() throws Exception {
+		return session.selectOne(namespace+".maxNum");
+	}
+	
+	
 	
 	
 	

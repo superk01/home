@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.FileVO;
 import org.zerock.domain.SearchCriteria;
 import org.zerock.persistence.BoardDAO;
 
@@ -25,12 +26,18 @@ public class BoardServiceImpl implements BoardService {
 		System.out.println("Service-creat()");
 		dao.create(boardVO);
 		
+		
 		String[] files = boardVO.getFiles();
 		if(files==null){
 			return;
 		}
+		
+		FileVO fileVO = new FileVO();
+		System.out.println(dao.maxNum());
+		fileVO.setBno(dao.maxNum());
 		for(String fileName : files){
-			dao.addAttach(fileName);
+			fileVO.setFullName(fileName);
+			dao.addAttach(fileVO);
 		}
 
 	}
