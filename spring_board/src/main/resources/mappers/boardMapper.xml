@@ -7,7 +7,7 @@
 
     <insert id="create" parameterType="BoardVO">
        insert into tbl_board(bno, title, content, writer, regdate, viewcnt, replycnt)
-          values((select nvl(max(bno)+1,1) from tbl_board), #{title}, #{content},
+          values(board_seq.nextval, #{title}, #{content},
                    #{writer}, sysdate, 0, 0)
                    
                 
@@ -73,7 +73,7 @@
    </update>
 
    <delete id="delete">
-      delete from tbl_board where bno = #{bno}
+      delete from tbl_board where bno = #{bno} 
    </delete>
    <select id="listPage" resultType="BoardVO" parameterType="Criteria">
    	  SELECT * FROM (SELECT ROWNUM as ROW_NUM, temp.* FROM(SELECT * FROM tbl_board ORDER BY bno DESC)temp)
@@ -90,28 +90,33 @@
          where bno = #{bno}
    </update>
    
-   <select id="getBno" resultType="int">
+ <!--   <select id="getBno" resultType="int">
       select bno from tbl_reply where rno = #{rno}
-   </select>
+   </select> -->
    
    <update id="updateViewCnt">
       update tbl_board set viewcnt = viewcnt + 1 
          where bno = #{bno}
    </update>
    
-   <insert id="addAttach" parameterType="FileVO">
+  <insert id="addAttach" parameterType="FileVO">
       insert into tbl_attach(fullname, bno) 
          values(#{fullName}, #{bno})
    </insert>
    
-   <select id="maxNum" resultType="int">
+  <select id="maxNum" resultType="int">
       select MAX(bno) from tbl_board
    </select>
    
-   <select id="getAttach" resultType="string">
+ <select id="getAttach" resultType="string">
       select fullname from tbl_attach where bno = #{bno} order by regdate
-   </select>
- 
+   </select> 
+ <delete id="deleteAttach">
+ 	delete from tbl_attach	where bno=#{bno}
+ </delete>
+ <insert id="replaceAttach">
+ 	insert into tbl_attach(fullname, bno) values(#{fullname},#{bno})
+ </insert>
    
 </mapper>  
 

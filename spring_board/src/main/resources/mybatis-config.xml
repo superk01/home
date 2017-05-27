@@ -6,6 +6,7 @@
 
   <typeAliases>
     <package name="org.zerock.domain"/>    <!-- org.zerock.domain생략하고 사용할 수 있다. -->
+    <package name="org.zerock.dto"/>
   </typeAliases>
 
 

@@ -105,22 +105,35 @@ public class BoardDAOImpl implements BoardDAO {
 
 	@Override
 	public void addAttach(FileVO fileVO) throws Exception {
-		System.out.println("BoardDAO-addAttach"+fileVO);
 		session.insert(namespace+".addAttach", fileVO);
-		
-	}
-
-	@Override
-	public List<String> getAttach(Integer bno) throws Exception {
-		return session.selectList(namespace+".getAttach", bno);
 	}
 
 	@Override
 	public int maxNum() throws Exception {
+		
 		return session.selectOne(namespace+".maxNum");
 	}
-	
-	
+
+	@Override
+	public List<String> getAttach(Integer bno) throws Exception {
+		
+		return session.selectList(namespace+".getAttach", bno);
+	}
+
+	@Override
+	public void deleteAttach(Integer bno) throws Exception {
+		session.delete(namespace+".deleteAttach", bno);
+		
+	}
+
+	@Override
+	public void replaceAttach(String fullName, Integer bno) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("fullname", fullName);
+		map.put("bno", bno);
+		
+		session.insert(namespace+".replaceAttach", map);		
+	}
 	
 	
 	

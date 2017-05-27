@@ -11,6 +11,7 @@ import org.zerock.domain.Criteria;
 import org.zerock.domain.FileVO;
 import org.zerock.domain.SearchCriteria;
 import org.zerock.persistence.BoardDAO;
+import org.zerock.persistence.ReplyDAO;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -18,28 +19,30 @@ public class BoardServiceImpl implements BoardService {
 	@Inject
 	private BoardDAO dao;
 	
+	@Inject
+	private ReplyDAO dao2;
 	
 	
-	@Transactional
+	
+
 	@Override
 	public void create(BoardVO boardVO) throws Exception {
 		System.out.println("Service-creat()");
 		dao.create(boardVO);
-		
-		
+		FileVO fileVO = new FileVO();
+
 		String[] files = boardVO.getFiles();
+		
 		if(files==null){
 			return;
 		}
 		
-		FileVO fileVO = new FileVO();
-		System.out.println(dao.maxNum());
 		fileVO.setBno(dao.maxNum());
-		for(String fileName : files){
+		for(String fileName: files){
 			fileVO.setFullName(fileName);
 			dao.addAttach(fileVO);
 		}
-
+		System.out.println("service:"+fileVO);
 	}
 
 	@Override
@@ -54,14 +57,29 @@ public class BoardServiceImpl implements BoardService {
 		return dao.listAll();
 	}
 
+	@Transactional
 	@Override
 	public void update(BoardVO boardVO) throws Exception {
 		dao.update(boardVO);
 
+		Integer bno = boardVO.getBno();
+		dao.deleteAttach(bno);
+		
+		String[] files = boardVO.getFiles();
+		
+		if(files==null){
+			return;
+		}
+		
+		for(String fileName : files){
+			dao.replaceAttach(fileName, bno);
+		}
 	}
 
 	@Override
 	public void delete(Integer bno) throws Exception {
+		dao.deleteAttach(bno);
+		dao2.deleteReply(bno);
 		dao.delete(bno);
 	}
 
@@ -94,6 +112,8 @@ public class BoardServiceImpl implements BoardService {
 		
 		return dao.getAttach(bno);
 	}
+	
+	
 	
 	
 	

@@ -33,7 +33,12 @@ public interface BoardDAO {
 	
 	public void addAttach(FileVO fileVO)throws Exception;
 	
+	public int maxNum()throws Exception;
+	
 	public List<String> getAttach(Integer bno)throws Exception;
 	
-	public int maxNum()throws Exception;
+	public void deleteAttach(Integer bno)throws Exception;
+	
+	public void replaceAttach(String fullName, Integer bno)throws Exception;
+	
 }

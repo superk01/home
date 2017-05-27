@@ -46,5 +46,8 @@
    	select bno from tbl_reply where rno = #{value}
    </select>
    
+   <delete id="deleteReply">
+		delete from tbl_reply where bno=#{bno}
+	</delete>
 
 </mapper>
