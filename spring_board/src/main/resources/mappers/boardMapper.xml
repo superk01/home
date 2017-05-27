@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.zerock.mapper.BoardMapper">
+
+    <insert id="create" parameterType="BoardVO">
+       insert into tbl_board(bno, title, content, writer, regdate, viewcnt, replycnt)
+          values((select nvl(max(bno)+1,1) from tbl_board), #{title}, #{content},
+                   #{writer}, sysdate, 0, 0)
+                   
+                
+    </insert>
+  <!--   <select id="listAll" resultType="BoardVO">
+    	select * from tbl_board order by bno desc
+    </select> -->
+    
+    
+    <select id="listSearch" resultType="BoardVO">
+       <![CDATA[
+          select 
+            *
+          from 
+            tbl_board             
+          where bno > 0
+      ]]>      
+          
+          <include refid="search"></include>
+          
+      <![CDATA[     
+          order by bno desc, regdate desc
+       ]]>  
+    </select>
+    
+    <sql id="search">
+      <if test="searchType != null">
+         <if test='searchType == "t"'>
+            and title like '%'|| #{keyword}||'%'
+         </if>
+         <if test="searchType == 'c'.toString()">
+            and content like '%'|| #{keyword}||'%'
+         </if>
+         <if test="searchType == 'w'.toString()">
+            and writer like '%'|| #{keyword}||'%'
+         </if>
+         <if test="searchType == 'tc'.toString()">
+            and ( title like '%'|| #{keyword}||'%' OR content like
+            '%'||
+            #{keyword}||'%')
+         </if>
+         <if test="searchType == 'cw'.toString()">
+            and ( content like '%'|| #{keyword}||'%' OR writer like
+            '%'||
+            #{keyword}||'%')
+         </if>
+         <if test="searchType == 'tcw'.toString()">
+            and ( title like '%'|| #{keyword}||'%'
+            OR
+            content like
+            '%'|| #{keyword}||'%'
+            OR
+            writer like '%'|| #{keyword}||'%')
+         </if>
+      </if>
+   </sql> 
+    
+    <select id="read" resultType="BoardVO"> select * from tbl_board where bno=#{value} </select>
+
+   <update id="update" parameterType="BoardVO">
+      update tbl_board set title =#{title}, content =#{content}, writer=#{writer} 
+      where bno = #{bno}
+   </update>
+
+   <delete id="delete">
+      delete from tbl_board where bno = #{bno}
+   </delete>
+   <select id="listPage" resultType="BoardVO" parameterType="Criteria">
+   	  SELECT * FROM (SELECT ROWNUM as ROW_NUM, temp.* FROM(SELECT * FROM tbl_board ORDER BY bno DESC)temp)
+      WHERE ROW_NUM BETWEEN (#{page}-1)*#{perPageNum}+1 AND (#{page}-1)*#{perPageNum}+10
+   </select>
+     
+	<select id="listSearchCount" resultType="int">
+     select count(*) from tbl_board where bno > 0         
+    <include refid="search"></include>
+   </select>
+   
+  <update id="updateReplyCnt">
+      update tbl_board set replycnt = replycnt + #{amount}
+         where bno = #{bno}
+   </update>
+   
+   <select id="getBno" resultType="int">
+      select bno from tbl_reply where rno = #{rno}
+   </select>
+   
+   <update id="updateViewCnt">
+      update tbl_board set viewcnt = viewcnt + 1 
+         where bno = #{bno}
+   </update>
+   
+   <insert id="addAttach" parameterType="FileVO">
+      insert into tbl_attach(fullname, bno) 
+         values(#{fullName}, #{bno})
+   </insert>
+   
+  <!--  <select id="maxNum" resultType="int">
+      select MAX(bno) from tbl_board
+   </select> -->
+   
+   <select id="getAttach" resultType="string">
+      select fullname from tbl_attach where bno = #{bno} order by regdate
+   </select>
+ 
+   
+</mapper>  
+
+
+
+
+
+
+
+
+
+

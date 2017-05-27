@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.ReplyMapper">
+	<select id="list" resultType="ReplyVO">
+		select * from tbl_reply where
+		bno=#{value} order by rno desc
+	</select>
+
+	<insert id="create" parameterType="ReplyVO">
+		insert into tbl_reply (rno,
+		bno, replytext, replyer, regdate, updatedate)
+		values(seq_reply.nextval, #{bno}, #{replytext}, #{replyer}, sysdate,
+		sysdate)
+	</insert>
+	<update id="update" parameterType="ReplyVO">
+		update tbl_reply set
+		replytext=#{replytext}, updatedate=sysdate
+		where rno=#{rno}
+	</update>
+	<delete id="delete">
+		delete from tbl_reply where rno=#{rno}
+	</delete>
+	<select id="count" resultType="Integer">
+		select count(*) from tbl_reply where bno=#{value}
+	</select>
+
+ <!-- 	<select resultType="ReplyVO" id="listPage">
+		<![CDATA[ 
+			select rno, bno, replytext, replyer, regdate, updatedate 
+			from ( select /*+INDEX_DESC(tbl_reply pk_reply))*/ 														
+			rownum rn, rno, bno, replytext, replyer, regdate, updatedate from tbl_reply 
+			where bno = #{bno} and rno > 0 and rownum <= #{cri.page} * #{cri.perPageNum} ) 
+			where rn > ( #{cri.page} -1) * #{cri.perPageNum} 
+		]]>
+	</select> -->
+	<!-- /* ~ */ 오라클 힌트부분. 해당 힌트는 rownum을 내림차순으로 정렬-->
+	
+	<!-- <select id="listPage" resultType="ReplyVO">
+   	  SELECT * FROM (SELECT ROWNUM as ROW_NUM, temp.* FROM(SELECT * FROM tbl_reply ORDER BY rno DESC)temp)
+      WHERE bno=#{bno} 
+      AND ROW_NUM BETWEEN (#{cri.page}-1)*#{cri.perPageNum}+1 AND (#{cri.page}-1)*#{cri.perPageNum}+10
+   </select> -->
+   <select id="getBno" resultType="int">
+   	select bno from tbl_reply where rno = #{value}
+   </select>
+   
+
+</mapper>
